@@ -11,59 +11,98 @@ app.use(express.json());
 
 // Get all agents
 app.get("/api/agents", async (req, res) => {
-    const results = await db.query("SELECT * FROM agent");
-    console.log(results);
-    res.status(200).json({
-        status: "success",
-        data: {
-            agents: ['Ben Torn', 'Alex'],
-        },
-    })
+    try {
+        const results = await db.query("SELECT * FROM agent");
+        res.status(200).json({
+            status: "success",
+            results: results.rows.length,
+            data: {
+                agents: results.rows,
+            },
+        })
+    } catch (err) {
+        console.log(err);
+        res.status(400).send("Bad request");
+    }
 });
 
 // Get an agent
-app.get("/api/agents/:agentID", (req, res) => {
-    const {agentID} = req.params;
-    console.log(agentID);
+app.get("/api/agents/:agentID", async (req, res) => {
+    try {
+        const {agentID} = req.params;
+        const results = await db.query(`SELECT *
+                                        FROM agent
+                                        WHERE agentid = $1`, [agentID]);
 
-    res.status(200).json({
-        status: "success",
-        data: {
-            agents: ['Ben Torn', 'Alex'],
-        },
-    })
+        res.status(200).json({
+            status: "success",
+            results: results.rows.length,
+            data: {
+                agent: results.rows[0],
+            },
+        })
+    } catch (err) {
+        console.log(err);
+        res.status(400).send("Bad request");
+    }
 })
 
 // Create an agent
-app.post("/api/agents", (req, res) => {
-    console.log(req.body);
+app.post("/api/agents", async (req, res) => {
+    try {
+        const {agentID, salary, name, email, phoneNum} = req.body;
 
-    res.status(201).json({
-        status: "success",
-        data: {
-            agents: ['Ben Torn', 'Alex'],
-        },
-    })
+        const results = await db.query(`INSERT INTO agent (agentid, salary, name, email, phonenum) 
+            VALUES ($1, $2, $3, $4, $5) RETURNING *`, [agentID, salary, name, email, phoneNum]);
+
+        res.status(201).json({
+            status: "success",
+            data: {
+                agent: results.rows[0],
+            },
+        })
+    } catch (err) {
+        console.log(err);
+        res.status(400).send("Duplicate agentID");
+    }
 })
 
 // Update an agent
-app.put("/api/agents/:agentID", (req, res) => {
-    console.log(req.params.agentID);
-    console.log(req.body);
+app.put("/api/agents/:agentID", async (req, res) => {
+    try {
+        const {agentID} = req.params;
+        const {salary, name, email, phoneNum} = req.body;
 
-    res.status(200).json({
-        status: "success",
-        data: {
-            agents: ['Ben Torn', 'Alex'],
-        },
-    })
+        const results = await db.query(`UPDATE agent 
+            SET salary = $2, name = $3, email = $4, phonenum = $5 
+            WHERE agentid = $1 RETURNING *`,
+            [agentID, salary, name, email, phoneNum])
+
+        res.status(200).json({
+            status: "success",
+            data: {
+                agent: results.rows[0],
+            },
+        })
+    } catch (err) {
+        console.log(err);
+        res.status(400).send("Unable to update");
+    }
+
 })
 
 // Delete an agent
-app.delete("/api/agents/:agentID", (req, res) => {
-    res.status(204).json({
-        status: "success"
-    })
+app.delete("/api/agents/:agentID", async (req, res) => {
+    try {
+        const {agentID} = req.params;
+        await db.query(`DELETE FROM agent WHERE agentid = $1`, [agentID]);
+        res.status(204).json({
+            status: "success"
+        })
+    } catch (err) {
+        console.log(err);
+        res.status(400).send("Unable to delete");
+    }
 })
 
 const port = process.env.PORT || 3001;
