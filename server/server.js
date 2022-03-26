@@ -1,8 +1,12 @@
 require("dotenv").config();
 const express = require("express");
+const cors = require("cors");
 const db = require("./db");
 const morgan = require("morgan");
 const app = express();
+
+// Allows API requests from a separate domain
+app.use(cors());
 
 // Used to console log API requests for development purposes
 app.use(morgan("dev"));
