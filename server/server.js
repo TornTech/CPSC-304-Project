@@ -56,7 +56,7 @@ app.post("/api/agents", async (req, res) => {
     try {
         const {agentID, salary, name, email, phoneNum} = req.body;
 
-        const results = await db.query(`INSERT INTO agent (agentid, salary, name, email, phonenum) 
+        const results = await db.query(`INSERT INTO agent (agentid, salary, aname, email, phonenum) 
             VALUES ($1, $2, $3, $4, $5) RETURNING *`, [agentID, salary, name, email, phoneNum]);
 
         res.status(201).json({
@@ -78,7 +78,7 @@ app.put("/api/agents/:agentID", async (req, res) => {
         const {salary, name, email, phoneNum} = req.body;
 
         const results = await db.query(`UPDATE agent 
-            SET salary = $2, name = $3, email = $4, phonenum = $5 
+            SET salary = $2, aname = $3, email = $4, phonenum = $5 
             WHERE agentid = $1 RETURNING *`,
             [agentID, salary, name, email, phoneNum])
 

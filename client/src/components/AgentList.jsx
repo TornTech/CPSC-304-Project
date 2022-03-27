@@ -35,7 +35,7 @@ const AgentList = (props) => {
                         return (
                             <tr key={agent.agentid}>
                                 <td>{agent.agentid}</td>
-                                <td>{agent.name}</td>
+                                <td>{agent.aname}</td>
                                 <td>{agent.salary}</td>
                                 <td>{agent.email}</td>
                                 <td>{agent.phonenum}</td>
