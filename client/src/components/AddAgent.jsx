@@ -1,11 +1,30 @@
-import React, {useState} from "react";
+import React, {useContext, useState} from "react";
+import api from "../apis/api"
+import {AgentsContext} from "../context/AgentsContext";
 
 const AddAgent = () => {
-    const [agentid, setAgentid] = useState("");
+    const {addAgents} = useContext(AgentsContext);
+    const [agentID, setAgentID] = useState("");
     const [name, setName] = useState("");
     const [salary, setSalary] = useState("");
     const [email, setEmail] = useState("");
-    const [phonenum, setPhonenum] = useState("");
+    const [phoneNum, setPhoneNum] = useState("");
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await api.post("/agents", {
+                agentID,
+                salary,
+                name,
+                email,
+                phoneNum
+            })
+            addAgents(response.data.data.agent)
+        } catch (err) {
+            console.log(err);
+        }
+    }
 
     return (
         <div className="mb-4">
@@ -13,8 +32,8 @@ const AddAgent = () => {
                 <div className="form-row">
                     <div className="col">
                         <input
-                            value={agentid}
-                            onChange={e => setAgentid(e.target.value)}
+                            value={agentID}
+                            onChange={e => setAgentID(e.target.value)}
                             type="number"
                             className="form-control"
                             placeholder="Agent ID"/>
@@ -23,7 +42,7 @@ const AddAgent = () => {
                         <input
                             value={name}
                             onChange={e => setName(e.target.value)}
-                            type="text" c
+                            type="text"
                             className="form-control"
                             placeholder="Name"/>
                     </div>
@@ -42,13 +61,13 @@ const AddAgent = () => {
                                placeholder="Email"/>
                     </div>
                     <div className="col">
-                        <input value={phonenum}
-                               onChange={e => setPhonenum(e.target.value)}
+                        <input value={phoneNum}
+                               onChange={e => setPhoneNum(e.target.value)}
                                type="text"
                                className="form-control"
                                placeholder="Phone Number"/>
                     </div>
-                    <button className="btn btn-primary">Add</button>
+                    <button onClick={handleSubmit} type="submit" className="btn btn-primary">Add</button>
                 </div>
             </form>
         </div>

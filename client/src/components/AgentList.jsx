@@ -1,20 +1,32 @@
 import React, {useContext, useEffect} from "react";
 import api from "../apis/api";
 import {AgentsContext} from "../context/AgentsContext";
+import {useNavigate} from "react-router-dom";
 
 const AgentList = (props) => {
     const {agents, setAgents} = useContext(AgentsContext);
-    useEffect(() => {
-        const fetchData = async() => {
-            try {
-              const response = await api.get("/agents");
-              setAgents(response.data.data.agents);
-            } catch (e) {
-
-            }
+    let navigate = useNavigate()
+    useEffect(async () => {
+        try {
+          const response = await api.get("/agents");
+          setAgents(response.data.data.agents);
+        } catch (err) {
+            console.log(err)
         }
-        fetchData();
     }, [])
+
+    const handleDelete = async (agentid) => {
+        try {
+            const response = await api.delete(`/agents/${agentid}`);
+            setAgents(agents.filter((agent) => agent.agentid !== agentid));
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    const handleUpdate = async (agentid) => {
+        navigate(`/agents/${agentid}/update`)
+    }
 
     return (
         <div className="list-group">
@@ -39,29 +51,11 @@ const AgentList = (props) => {
                                 <td>{agent.salary}</td>
                                 <td>{agent.email}</td>
                                 <td>{agent.phonenum}</td>
-                                <td><button className="btn btn-warning">Update</button></td>
-                                <td><button className="btn btn-danger">Delete</button></td>
+                                <td><button onClick={() => handleUpdate(agent.agentid)} className="btn btn-warning">Update</button></td>
+                                <td><button onClick={() => handleDelete(agent.agentid)} className="btn btn-danger">Delete</button></td>
                             </tr>
                             )
                     })}
-                    {/*<tr>*/}
-                    {/*    <td>1</td>*/}
-                    {/*    <td>Ben</td>*/}
-                    {/*    <td>69000</td>*/}
-                    {/*    <td>tornben@gmail.com</td>*/}
-                    {/*    <td>6045621572</td>*/}
-                    {/*    <td><button className="btn btn-warning">Update</button></td>*/}
-                    {/*    <td><button className="btn btn-danger">Delete</button></td>*/}
-                    {/*</tr>*/}
-                    {/*<tr>*/}
-                    {/*    <td>1</td>*/}
-                    {/*    <td>Ben</td>*/}
-                    {/*    <td>69000</td>*/}
-                    {/*    <td>tornben@gmail.com</td>*/}
-                    {/*    <td>6045621572</td>*/}
-                    {/*    <td><button className="btn btn-warning">Update</button></td>*/}
-                    {/*    <td><button className="btn btn-danger">Delete</button></td>*/}
-                    {/*</tr>*/}
                 </tbody>
             </table>
         </div>

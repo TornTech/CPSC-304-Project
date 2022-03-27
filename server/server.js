@@ -16,7 +16,7 @@ app.use(express.json());
 // Get all agents
 app.get("/api/agents", async (req, res) => {
     try {
-        const results = await db.query("SELECT * FROM agent");
+        const results = await db.query("SELECT * FROM agent ORDER BY agentid");
         res.status(200).json({
             status: "success",
             results: results.rows.length,
@@ -57,7 +57,8 @@ app.post("/api/agents", async (req, res) => {
         const {agentID, salary, name, email, phoneNum} = req.body;
 
         const results = await db.query(`INSERT INTO agent (agentid, salary, aname, email, phonenum) 
-            VALUES ($1, $2, $3, $4, $5) RETURNING *`, [agentID, salary, name, email, phoneNum]);
+            VALUES ($1, $2, $3, $4, $5) 
+            RETURNING *`, [agentID, salary, name, email, phoneNum]);
 
         res.status(201).json({
             status: "success",
