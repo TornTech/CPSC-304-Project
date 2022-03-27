@@ -13,10 +13,11 @@ FROM Agent AS A, Training AS T, TrainingCompletion AS TC
 WHERE A.AgentID = TC.AgentID AND T.ModuleNum = TC.ModuleNum AND T.TName = 'Handling Difficult Customers';
 
 /* AGGREGATION: In English: List the name and salary of the agent who earns the highest agent salary in the company */
-SELECT AName, MAX(Salary) AS HighestSalary
+SELECT AName, Salary AS HighestSalary
 FROM Agent
-GROUP BY AName
-FETCH FIRST ROW ONLY;
+WHERE Salary = 
+  (SELECT MAX (Salary)
+   FROM Agent);
 
 /* NESTED AGGREGATION with GROUP BY:
 For each call centre (listed by their ID), list the average salary earned by the agents who work in that call centre */
