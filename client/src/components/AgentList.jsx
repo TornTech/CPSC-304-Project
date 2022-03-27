@@ -15,7 +15,8 @@ const AgentList = (props) => {
         }
     }, [])
 
-    const handleDelete = async (agentid) => {
+    const handleDelete = async (e, agentid) => {
+        e.stopPropagation();
         try {
             const response = await api.delete(`/agents/${agentid}`);
             setAgents(agents.filter((agent) => agent.agentid !== agentid));
@@ -24,12 +25,18 @@ const AgentList = (props) => {
         }
     }
 
-    const handleUpdate = async (agentid) => {
-        navigate(`/agents/${agentid}/update`)
+    const handleUpdate = async (e, agentid) => {
+        e.stopPropagation();
+        navigate(`/agents/${agentid}/update`);
+    }
+
+    const handleAgentSelect = (agentid) => {
+        navigate(`/agents/${agentid}`);
     }
 
     return (
         <div className="list-group">
+            <legend>Current agent list:</legend>
             <table className="table table-hover table-dark">
                 <thead>
                     <tr className="bg-primary">
@@ -45,14 +52,14 @@ const AgentList = (props) => {
                 <tbody>
                     {agents && agents.map(agent => {
                         return (
-                            <tr key={agent.agentid}>
+                            <tr onClick={() => handleAgentSelect(agent.agentid)} key={agent.agentid}>
                                 <td>{agent.agentid}</td>
                                 <td>{agent.aname}</td>
                                 <td>{agent.salary}</td>
                                 <td>{agent.email}</td>
                                 <td>{agent.phonenum}</td>
-                                <td><button onClick={() => handleUpdate(agent.agentid)} className="btn btn-warning">Update</button></td>
-                                <td><button onClick={() => handleDelete(agent.agentid)} className="btn btn-danger">Delete</button></td>
+                                <td><button onClick={(e) => handleUpdate(e, agent.agentid)} className="btn btn-warning">Update</button></td>
+                                <td><button onClick={(e) => handleDelete(e, agent.agentid)} className="btn btn-danger">Delete</button></td>
                             </tr>
                             )
                     })}

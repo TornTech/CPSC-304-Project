@@ -110,6 +110,57 @@ app.delete("/api/agents/:agentID", async (req, res) => {
     }
 })
 
+// Get all training modules completed by agent
+app.get("/api/agents/:agentID/trainings", async (req, res) => {
+    try {
+        const {agentID} = req.params;
+        const results = await db.query(`SELECT T.modulenum, T.tlength, T.tname, TC.completiondate
+                                            FROM Agent as A, Training as T, TrainingCompletion as TC
+                                            WHERE A.AgentID = TC.AgentID AND T.ModuleNum = TC.ModuleNum AND A.agentid = $1`,[agentID]);
+        res.status(200).json({
+                status: "success",
+                results: results.rows.length,
+                data: {
+                    training_completed: results.rows,
+                },
+            }
+
+        )
+    } catch (err) {
+        console.log(err);
+        res.status(400).send("Bad request");
+    }
+})
+
+app.post("/api/agents/trainings", async (req, res) => {
+    try {
+        const {agentid, modulenum, completion_date} = req.body;
+
+        const results = await db.query(`INSERT INTO trainingcompletion (agentid, modulenum, completiondate) 
+            VALUES ($1, $2, $3)
+            RETURNING *`, [agentid, modulenum, completion_date]);
+        console.log(results);
+
+        const combinedResults = await db.query(
+            `SELECT A.agentid, TC.modulenum, T.tname, T.tlength, TC.completiondate 
+            FROM Agent as A, Training as T, TrainingCompletion as TC
+            WHERE A.AgentID = TC.AgentID AND T.ModuleNum = TC.ModuleNum AND TC.modulenum=$1 AND A.agentid = $2`,
+            [modulenum,agentid])
+
+        console.log(combinedResults);
+
+        res.status(201).json({
+            status: "success",
+            data: {
+                training_added: combinedResults.rows[0],
+            },
+        })
+    } catch (err) {
+        console.log(err);
+        res.status(400).send("Bad request");
+    }
+})
+
 const port = process.env.PORT || 3001;
 app.listen(port, () => {
     console.log(`Server is up and listening on port ${port}`);

@@ -20,6 +20,8 @@ const UpdateAgent = () => {
             setSalary(response.data.data.agent.salary)
             setEmail(response.data.data.agent.email)
             setPhoneNum(response.data.data.agent.phonenum)
+            console.log(response);
+            console.log(email);
         } catch (err) {
             console.log(err)
         }
@@ -51,7 +53,8 @@ const UpdateAgent = () => {
                         onChange={e => setAgentID(e.target.value)}
                         id="agentid"
                         className="form-control"
-                        type="number" />
+                        type="number"
+                        readOnly/>
                 </div>
                 <div className="form-group">
                     <label htmlFor="name">Name</label>
@@ -87,7 +90,8 @@ const UpdateAgent = () => {
                         onChange={e => setPhoneNum(e.target.value)}
                         id="phonenum"
                         className="form-control"
-                        type="text" />
+                        type="text"
+                        maxLength="10"/>
                 </div>
                 <button onClick={handleSubmit} className={"btn btn-primary"}>Submit</button>
             </form>

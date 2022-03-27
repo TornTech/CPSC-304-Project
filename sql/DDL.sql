@@ -1,8 +1,8 @@
 CREATE TABLE IF NOT EXISTS Agent(
     AgentID INT PRIMARY KEY,
     Salary INT CHECK (salary >= 0),
-    AName CHAR(50),
-    Email CHAR(50),
+    AName VARCHAR(50),
+    Email VARCHAR(50),
     PhoneNum CHAR(10)
 );
 
