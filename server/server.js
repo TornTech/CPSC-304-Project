@@ -124,7 +124,6 @@ app.get("/api/agents/:agentID/trainings", async (req, res) => {
                     training_completed: results.rows,
                 },
             }
-
         )
     } catch (err) {
         console.log(err);
@@ -132,6 +131,7 @@ app.get("/api/agents/:agentID/trainings", async (req, res) => {
     }
 })
 
+// Add new training module completion to an agent
 app.post("/api/agents/trainings", async (req, res) => {
     try {
         const {agentid, modulenum, completion_date} = req.body;
@@ -155,6 +155,52 @@ app.post("/api/agents/trainings", async (req, res) => {
                 training_added: combinedResults.rows[0],
             },
         })
+    } catch (err) {
+        console.log(err);
+        res.status(400).send("Bad request");
+    }
+})
+
+// Find the highest paid agent
+app.get("/api/stats/agents/highestpaid", async (req, res) => {
+    try {
+        const results = await db.query(
+            `SELECT AName, agentid, Salary
+            FROM Agent
+            WHERE Salary =
+                (SELECT MAX (Salary)
+            FROM Agent)`);
+
+        res.status(200).json({
+                status: "success",
+                results: results.rows.length,
+                data: {
+                    highest_paid: results.rows
+                },
+            }
+        )
+    } catch (err) {
+        console.log(err);
+        res.status(400).send("Bad request");
+    }
+})
+
+app.get("/api/locations", async (req, res) => {
+    try {
+        const results = await db.query(`
+            SELECT C.CallCentreID, C.ccaddress, C.managername, C.phonelinecount, AVG(Salary) as avg_salary
+            FROM Agent AS A, WorksIn AS W, CallCentres as C
+            WHERE A.AgentID = W.AgentID AND W.callcentreid = C.callcentreid
+            GROUP BY C.CallCentreID`);
+
+        res.status(200).json({
+            status: "success",
+            results: results.rows.length,
+            data: {
+                locations: results.rows
+            },
+        });
+
     } catch (err) {
         console.log(err);
         res.status(400).send("Bad request");

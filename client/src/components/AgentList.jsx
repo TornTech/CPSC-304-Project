@@ -2,6 +2,7 @@ import React, {useContext, useEffect} from "react";
 import api from "../apis/api";
 import {AgentsContext} from "../context/AgentsContext";
 import {useNavigate} from "react-router-dom";
+import {formatDollar, formatPhoneNumber} from "../utils/utils";
 
 const AgentList = (props) => {
     const {agents, setAgents} = useContext(AgentsContext);
@@ -55,9 +56,9 @@ const AgentList = (props) => {
                             <tr onClick={() => handleAgentSelect(agent.agentid)} key={agent.agentid}>
                                 <td>{agent.agentid}</td>
                                 <td>{agent.aname}</td>
-                                <td>{agent.salary}</td>
+                                <td>{formatDollar(agent.salary)}</td>
                                 <td>{agent.email}</td>
-                                <td>{agent.phonenum}</td>
+                                <td>{formatPhoneNumber(agent.phonenum)}</td>
                                 <td><button onClick={(e) => handleUpdate(e, agent.agentid)} className="btn btn-warning">Update</button></td>
                                 <td><button onClick={(e) => handleDelete(e, agent.agentid)} className="btn btn-danger">Delete</button></td>
                             </tr>
