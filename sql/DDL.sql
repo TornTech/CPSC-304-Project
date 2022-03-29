@@ -8,14 +8,14 @@ CREATE TABLE IF NOT EXISTS Agent(
 
 CREATE TABLE IF NOT EXISTS CallCentres(
     CallCentreID INT PRIMARY KEY,
-    CCAddress CHAR(200),
-    ManagerName CHAR(50),
+    CCAddress VARCHAR(200),
+    ManagerName VARCHAR(50),
     PhoneLineCount INT
 );
 
 CREATE TABLE IF NOT EXISTS WorksIn(
     AgentID INT PRIMARY KEY,
-    CallCentreID INT,
+    CallCentreID INT NOT NULL,
     StartDate DATE NOT NULL,
     EndDate DATE,
     FOREIGN KEY (AgentID) REFERENCES Agent ON DELETE CASCADE,
@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS WorksIn(
 CREATE TABLE IF NOT EXISTS Training(
     ModuleNum INT PRIMARY KEY,
     TLength INT,
-    TName CHAR(50) UNIQUE
+    TName VARCHAR(50) UNIQUE
 );
 
 CREATE TABLE IF NOT EXISTS TrainingCompletion(

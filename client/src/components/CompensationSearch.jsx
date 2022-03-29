@@ -1,47 +1,72 @@
 import React, {useContext, useEffect, useState} from "react";
 import {AgentsContext} from "../context/AgentsContext";
 import api from "../apis/api";
-import {formatDollar} from "../utils/utils";
+import {formatDollar, formatPhoneNumber} from "../utils/utils";
 import {useNavigate} from "react-router-dom";
 
 const CompensationSearch = () => {
 
     const {agents, setAgents} = useContext(AgentsContext);
-    let navigate = useNavigate();
-    const [renderedYet, setRenderedYet] = useState(false);
+    // let navigate = useNavigate();
+    const [searchCompleted, setSearchCompleted] = useState(false);
+    const [salaryVal, setSalaryVal] = useState("");
 
-    useEffect( () => {
-        const fetchData = async() => {
-            const highest_paid_response = await api.get("/stats/agents/highestpaid");
-            const agents = highest_paid_response.data.data.highest_paid;
-            setAgents(agents);
-            setRenderedYet(true);
+    const handleSearch = (e) => {
+        const fetchData = async () => {
+            try {
+                e.preventDefault();
+                const response = await api.get(`/stats/agents/compensation?salary=${salaryVal}`);
+                setAgents(response.data.data.agents);
+                setSearchCompleted(true);
+            } catch (err) {
+
+            }
         }
         fetchData();
-    }, [setAgents])
-
-    const redirectToProfile = (e, agentid) => {
-        e.stopPropagation();
-        navigate(`/agents/${agentid}`);
     }
 
     return (
-        <div className="card text-center">
-            <div className="card-header">
-                Highest Paid Agent{agents && agents.length > 1 ? "s" : ""}
-            </div>
-            <div className="card-body">
-                <h3>{agents ? `Highest salary is ${formatDollar(agents[0].salary)} and is earned by:` : "Loading..."}</h3>
-                <div className="col-md-3 col-sm-3 col-xs-3">&nbsp;</div>
-                {renderedYet && agents && agents.map(agent => {
-                    return (
-                        <div key={agent.agentid}>
-                            <h5 className="card-title">{agent.aname}</h5>
-                            <button onClick={(e) => redirectToProfile(e, agent.agentid)} className="btn btn-info">Go to profile</button>
-                            <div className="col-md-3 col-sm-3 col-xs-3">&nbsp;</div>
+        <div>
+            <div className="card">
+                <div className="card-header"> Search for agents making over </div>
+                <div className="card-body">
+                    <form action="">
+                        <div className="form-row">
+                            <div className="col">
+                                <input
+                                    value={salaryVal}
+                                    onChange={e => setSalaryVal(e.target.value)}
+                                    type="number"
+                                    className="form-control"
+                                    placeholder="Salary"/>
+                            </div>
+                            <button onClick={(e) => handleSearch(e)} type="submit" className="btn btn-primary">Search</button>
                         </div>
+                    </form>
+                </div>
+            </div>
+            <div className="list-group">
+                <legend>Results:</legend>
+                <table className="table table-hover table-dark">
+                    <thead>
+                    <tr className="bg-primary">
+                        <th scope="col">Agent ID</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Salary</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {searchCompleted && agents && agents.map(agent => {
+                        return (
+                            <tr key={agent.agentid}>
+                                <td>{agent.agentid}</td>
+                                <td>{agent.aname}</td>
+                                <td>{formatDollar(agent.salary)}</td>
+                            </tr>
                         )
-                })}
+                    })}
+                    </tbody>
+                </table>
             </div>
         </div>
     )

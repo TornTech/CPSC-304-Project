@@ -12,9 +12,9 @@ export const SidebarData = [
         cName: 'nav-text'
     },
     {
-        title: 'Compensation',
-        path: '/compensation',
-        icon: <FaIcons.FaMoneyBillAlt />,
+        title: 'Highest Paid',
+        path: '/highestpaid',
+        icon: <AiIcons.AiOutlineTrophy />,
         cName: 'nav-text'
     },
     {
@@ -27,6 +27,18 @@ export const SidebarData = [
         title: 'Qualifications',
         path: '/qualifications',
         icon: <IoIcons.IoMdPeople />,
+        cName: 'nav-text'
+    },
+    {
+        title: 'Compensation',
+        path: '/compensation',
+        icon: <FaIcons.FaMoneyBillAlt />,
+        cName: 'nav-text'
+    },
+    {
+        title: 'Module Completion',
+        path: '/modulecompletion',
+        icon: <FaIcons.FaChalkboardTeacher />,
         cName: 'nav-text'
     },
 ];

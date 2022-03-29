@@ -201,6 +201,32 @@ app.get("/api/stats/agents/highestpaid", async (req, res) => {
     }
 })
 
+// Find agents making over x salary
+app.get("/api/stats/agents/compensation", async (req, res) => {
+    try {
+        const salary = Number(req.query.salary);
+
+        const results = await db.query(
+            `SELECT AName, agentid, Salary
+            FROM Agent
+            WHERE Salary >= $1`,
+            [salary]);
+
+        console.log(results);
+        res.status(200).json({
+                status: "success",
+                results: results.rows.length,
+                data: {
+                    agents: results.rows
+                },
+            }
+        )
+    } catch (err) {
+        console.log(err);
+        res.status(400).send("Bad request");
+    }
+})
+
 app.get("/api/locations", async (req, res) => {
     try {
         const results = await db.query(`
@@ -242,6 +268,26 @@ app.get("/api/qualifications", async (req, res) => {
             qualified_agents: results.rows
         },
     });
+})
+
+// Get list of all training completions
+app.get("/api/modulecompletion", async (req, res) => {
+    try {
+        const results = await db.query(`
+            SELECT A.agentid, A.aname, T.tname, T.modulenum, TC.completiondate
+            FROM Agent A, Training T, trainingcompletion TC
+            WHERE A.agentid = TC.agentid AND TC.modulenum = T.modulenum`);
+        res.status(200).send({
+            status: "success",
+            results: results.rows.length,
+            data: {
+                training_completion: results.rows
+            },
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(400).send("Bad request");
+    }
 })
 
 const port = process.env.PORT || 3001;
