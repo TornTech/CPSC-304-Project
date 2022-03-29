@@ -24,6 +24,16 @@ const AgentTrainingList = () => {
         }
     }, [])
 
+    const handleDelete = async (e, agentid, modulenum) => {
+        e.stopPropagation();
+        try {
+            const deleteResponse = await api.delete(`/agents/${agentid}/trainings/${modulenum}`)
+            setTrainings(trainings.filter((training) => training.modulenum !== modulenum))
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
     return (
             <div className="list-group">
                 <legend>Trainings completed by {selectedAgent ? selectedAgent.aname : ""}:</legend>
@@ -34,6 +44,7 @@ const AgentTrainingList = () => {
                             <th scope="col">Module Name</th>
                             <th scope="col">Length (Minutes)</th>
                             <th scope="col">Completion Date</th>
+                            <th scope="col">Delete</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -44,6 +55,7 @@ const AgentTrainingList = () => {
                                 <td>{training.tname}</td>
                                 <td>{training.tlength}</td>
                                 <td>{new Date(training.completiondate).toDateString()}</td>
+                                <td><button onClick={(e) => handleDelete(e, selectedAgent.agentid, training.modulenum)} className="btn btn-danger">Delete</button></td>
                             </tr>
                             )
                     })}

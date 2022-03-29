@@ -12,7 +12,7 @@ const LocationsList = () => {
         } catch (err) {
 
         }
-    })
+    }, [])
 
     return (
         <div >
@@ -29,7 +29,7 @@ const LocationsList = () => {
                 <tbody>
                     {locations && locations.map(location => {
                         return (
-                            <tr>
+                            <tr key={location.callcentreid}>
                                 <td>{location.callcentreid}</td>
                                 <td>{location.ccaddress}</td>
                                 <td>{location.managername}</td>

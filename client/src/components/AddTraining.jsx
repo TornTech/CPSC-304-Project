@@ -17,7 +17,6 @@ const AddTraining = () => {
                 modulenum: modulenum,
                 completion_date: completionDate
             })
-            console.log(response.data.data.training_added);
             addTraining(response.data.data.training_added);
         } catch (err) {
             console.log(err);

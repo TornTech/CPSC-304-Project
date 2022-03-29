@@ -1,4 +1,4 @@
-import React, {useContext, useEffect} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {AgentsContext} from "../context/AgentsContext";
 import api from "../apis/api";
 import {formatDollar} from "../utils/utils";
@@ -8,12 +8,14 @@ const CompensationSearch = () => {
 
     const {agents, setAgents} = useContext(AgentsContext);
     let navigate = useNavigate();
+    const [renderedYet, setRenderedYet] = useState(false);
 
     useEffect( () => {
         const fetchData = async() => {
             const highest_paid_response = await api.get("/stats/agents/highestpaid");
             const agents = highest_paid_response.data.data.highest_paid;
             setAgents(agents);
+            setRenderedYet(true);
         }
         fetchData();
     }, [setAgents])
@@ -31,7 +33,7 @@ const CompensationSearch = () => {
             <div className="card-body">
                 <h3>{agents ? `Highest salary is ${formatDollar(agents[0].salary)} and is earned by:` : "Loading..."}</h3>
                 <div className="col-md-3 col-sm-3 col-xs-3">&nbsp;</div>
-                {agents && agents.map(agent => {
+                {renderedYet && agents && agents.map(agent => {
                     return (
                         <div key={agent.agentid}>
                             <h5 className="card-title">{agent.aname}</h5>

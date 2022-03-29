@@ -8,6 +8,7 @@ import {AgentsContextProvider} from "./context/AgentsContext";
 import Navbar from "./components/navbar/Navbar";
 import LocationsPage from "./routes/LocationsPage";
 import {LocationsContextProvider} from "./context/LocationsContext";
+import QualificationsPage from "./routes/QualificationsPage";
 
 const App = () => {
     return (
@@ -20,6 +21,7 @@ const App = () => {
                     <Route exact path="/agents/:id" element={<AgentDetailPage/>}/>
                     <Route exact path="/agents/:id/update" element={<AgentUpdatePage/>}/>
                     <Route exact path="/compensation" element={<CompensationPage/>}/>
+                    <Route exact path="/qualifications" element={<QualificationsPage/>}/>
                     <Route exact path="/locations" element={
                         <LocationsContextProvider>
                             <LocationsPage/>

@@ -131,6 +131,22 @@ app.get("/api/agents/:agentID/trainings", async (req, res) => {
     }
 })
 
+app.delete("/api/agents/:agentID/trainings/:modulenum", async (req, res) => {
+    try {
+        const {agentID, modulenum} = req.params;
+        const results = await db.query(`
+            DELETE FROM trainingcompletion WHERE agentid = $1 AND modulenum = $2`,
+            [agentID, modulenum])
+
+        res.status(204).json({
+            status: "success"
+        })
+    } catch (err) {
+        console.log(err);
+        res.status(400).send("Unable to delete");
+    }
+})
+
 // Add new training module completion to an agent
 app.post("/api/agents/trainings", async (req, res) => {
     try {
@@ -205,6 +221,27 @@ app.get("/api/locations", async (req, res) => {
         console.log(err);
         res.status(400).send("Bad request");
     }
+})
+
+app.get("/api/qualifications", async (req, res) => {
+    const results = await db.query(`
+        SELECT agentid, AName, email, phonenum
+        FROM Agent AS A
+        WHERE NOT EXISTS
+            ((SELECT T.ModuleNum
+            FROM Training AS T)
+            EXCEPT
+            (SELECT TC.ModuleNum
+            FROM TrainingCompletion AS TC
+            WHERE TC.AgentID = A.AgentID))`)
+
+    res.status(200).send({
+        status: "success",
+        results: results.rows.length,
+        data: {
+            qualified_agents: results.rows
+        },
+    });
 })
 
 const port = process.env.PORT || 3001;
