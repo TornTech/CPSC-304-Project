@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS WorksIn(
     CallCentreID INT,
     StartDate DATE NOT NULL,
     EndDate DATE,
-    FOREIGN KEY (AgentID) REFERENCES Agent,
+    FOREIGN KEY (AgentID) REFERENCES Agent ON DELETE CASCADE,
     FOREIGN KEY (CallCentreID) REFERENCES CallCentres
 );
 
