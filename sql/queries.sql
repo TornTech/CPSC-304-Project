@@ -7,10 +7,16 @@ WHERE Salary > 50000;
 SELECT CallCentreID, CCAddress, ManagerName
 FROM CallCentres;
 
-/* JOIN: Join the Agent, Training, and TrainingCompletion tables to find the names and emails of the agents who have completed the training module named ‘Handling Difficult Customers’ */
+/* JOIN:  List the training modules completed by agent 1 */
+SELECT T.modulenum, T.tlength, T.tname, TC.completiondate
+FROM Agent as A, Training as T, TrainingCompletion as TC
+WHERE A.AgentID = TC.AgentID AND T.ModuleNum = TC.ModuleNum AND A.agentid = 1;
+
+/* OLD JOIN: Join the Agent, Training, and TrainingCompletion tables to find the names and emails of the agents who have completed the training module named ‘Handling Difficult Customers’ 
 SELECT T.modulenum, T.tlength, T.tname
 FROM Agent as A, Training as T, TrainingCompletion as TC
 WHERE A.AgentID = TC.AgentID AND T.ModuleNum = TC.ModuleNum AND A.agentid = 2;
+*/
 
 /* AGGREGATION: In English: List the name and salary of the agent who earns the highest agent salary in the company */
 SELECT AName, Salary AS HighestSalary
