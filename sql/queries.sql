@@ -27,19 +27,19 @@ WHERE Salary =
 
 /* NESTED AGGREGATION with GROUP BY:
 For each call centre (listed by their ID), list the average salary earned by the agents who work in that call centre */
-SELECT CallCentreID, AVG(Salary)
-FROM Agent AS A, WorksIn AS W
-WHERE A.AgentID = W.AgentID
-GROUP BY CallCentreID;
+SELECT C.CallCentreID, C.ccaddress, C.managername, C.phonelinecount, AVG(Salary) as avg_salary
+FROM Agent AS A, WorksIn AS W, CallCentres as C
+WHERE A.AgentID = W.AgentID AND W.callcentreid = C.callcentreid
+GROUP BY C.CallCentreID;
 
 
-/* DIVISION: Find the names of the agents who have completed all the training modules */
-SELECT AName
-FROM Agent AS A
-WHERE NOT EXISTS
-    ((SELECT T.ModuleNum
+/* DIVISION: Find the agents who have completed all of the training modules */
+SELECT agentid, AName, email, phonenum
+  FROM Agent AS A
+  WHERE NOT EXISTS
+      ((SELECT T.ModuleNum
       FROM Training AS T)
-     EXCEPT
-     (SELECT TC.ModuleNum
+      EXCEPT
+      (SELECT TC.ModuleNum
       FROM TrainingCompletion AS TC
       WHERE TC.AgentID = A.AgentID));
