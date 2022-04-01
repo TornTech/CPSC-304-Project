@@ -121,6 +121,9 @@ INSERT INTO WorksIn (AgentID, CallCentreID, StartDate, EndDate)
 INSERT INTO WorksIn (AgentID, CallCentreID, StartDate, EndDate)
     VALUES (10, 1003, '2007-09-12', NULL);
 
+INSERT INTO WorksIn (AgentID, CallCentreID, StartDate, EndDate)
+    VALUES (11, 1000, '2008-12-11', NULL);
+
 
 
 INSERT INTO Training (ModuleNum, TLength, TName)

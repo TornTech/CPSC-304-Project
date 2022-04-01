@@ -45,7 +45,6 @@ const AgentList = (props) => {
                         <th scope="col">Name</th>
                         <th scope="col">Salary</th>
                         <th scope="col">Email</th>
-                        <th scope="col">Phone Number</th>
                         <th scope="col">Edit</th>
                         <th scope="col">Delete</th>
                     </tr>
@@ -58,7 +57,6 @@ const AgentList = (props) => {
                                 <td>{agent.aname}</td>
                                 <td>{formatDollar(agent.salary)}</td>
                                 <td>{agent.email}</td>
-                                <td>{formatPhoneNumber(agent.phonenum)}</td>
                                 <td><button onClick={(e) => handleUpdate(e, agent.agentid)} className="btn btn-warning">Update</button></td>
                                 <td><button onClick={(e) => handleDelete(e, agent.agentid)} className="btn btn-danger">Delete</button></td>
                             </tr>

@@ -16,7 +16,7 @@ app.use(express.json());
 // Get all agents
 app.get("/api/agents", async (req, res) => {
     try {
-        const results = await db.query("SELECT * FROM agent ORDER BY agentid");
+        const results = await db.query("SELECT agentid, aname, salary, email FROM agent ORDER BY agentid");
         res.status(200).json({
             status: "success",
             results: results.rows.length,
@@ -231,9 +231,12 @@ app.get("/api/locations", async (req, res) => {
     try {
         const results = await db.query(`
             SELECT C.CallCentreID, C.ccaddress, C.managername, C.phonelinecount, AVG(Salary) as avg_salary
-            FROM Agent AS A, WorksIn AS W, CallCentres as C
-            WHERE A.AgentID = W.AgentID AND W.callcentreid = C.callcentreid
-            GROUP BY C.CallCentreID`);
+            FROM Agent AS A, WorksIn AS W, CallCentres AS C
+            WHERE A.AgentID = W.AgentID AND W.CallCentreID = C.CallCentreID
+            GROUP BY W.CallCentreID, C.CallCentreID
+            HAVING 2 <= (SELECT COUNT(*)
+                FROM WorksIn AS W2
+                WHERE W.CAllCentreID = W2.CAllCentreID)`);
 
         res.status(200).json({
             status: "success",
